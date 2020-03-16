@@ -20,3 +20,13 @@ class AuthorBook(models.Model):
 
     class Meta:
         db_table = 'author_book'
+
+class User(models.Model):
+    kakao       = models.IntegerField(null=True)
+    facebook    = models.IntegerField(null=True)
+    nick_name   = models.CharField(max_length=25, unique=True)
+    email       = models.CharField(max_length=50, null=True, unique=True)
+    password    = models.CharField(max_length=400, null=True)
+
+    class Meta:
+        db_table = 'users'
