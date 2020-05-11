@@ -114,7 +114,7 @@ class AuthorBookTest(TestCase):
         response = client.get('/book/author-book/python')
         self.assertEqual(response.json(),
             {
-                'authors': [{'author': 1}, {'author': 2}]
+                
             }
         )
         self.assertEqual(response.status_code, 200)  
@@ -133,36 +133,3 @@ class AuthorBookTest(TestCase):
         client = Client()
         response = client.get('/book/author-book?book=python')
         self.assertEqual(response.status_code, 400)
-
-
-class SocialKakaoViewTest(TestCase):
-    def setUp(self):
-    
-        User.objects.create(
-            nick_name = 'evergreen',
-            email     = 'evergreen@gmail.com',
-            password  = bcrypt.hashpw('12345678'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-            kakao = 1234
-        )
-    
-    def tearDown(self):
-        User.objects.all().delete()
-
-    @patch('book.views.requests') #book 앱의 views.py에서 사용될 requests를 patch
-    def test_kakao_signin(self, mocked_requests):
-        client = Client()
-        # 실제로 kakao API를 호출하지 않고
-        # kakao API의 응답을 Fake하기 위해 MockedResponse 작성
-        class MockedResponse:
-            def json(self):
-                return {
-                    'id' : '1234', 
-                    'properties' : {'nickname' : 'evergreen'}
-                }
-
-        mocked_requests.get = MagicMock(return_value = MockedResponse())
-
-        header = {'HTTP_Authorization' : '1234ABCD'}
-        response = client.post('/book/kakao-signin', content_type='applications/json', **header)
-
-        self.assertEqual(response.status_code, 200)
